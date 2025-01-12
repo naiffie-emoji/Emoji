@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Machine à sous Emoji - Objets</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f3f3f3;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .machine {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .row {
+      display: flex;
+      justify-content: center;
+      margin: 10px 0;
+    }
+    .reel {
+      font-size: 3rem;
+      width: 100px;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 2px solid #333;
+      border-radius: 10px;
+      margin: 5px;
+      background-color: #fff;
+    }
+    .controls {
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎰 Chasseur d'Emojis 🎰</h1>
+  <div class="machine">
+    <div class="row">
+      <div class="reel" id="reel1">📦</div>
+      <div class="reel" id="reel2">📦</div>
+      <div class="reel" id="reel3">📦</div>
+    </div>
+    <div class="row">
+      <div class="reel" id="reel4">📦</div>
+      <div class="reel" id="reel5">📦</div>
+    </div>
+  </div>
+  <div class="controls">
+    <button id="spinButton">Lancer</button>
+  </div>
+
+  <script>
+    // Liste de 500 emojis d'objets
+    const emojis = [
+      "📁", "📂", "📃", "📄", "📑", "📈", "📉", "📊", "📅", "📆", "📇", "📋", "📌",
+      "📍", "📎", "📏", "📐", "✂️", "📕", "📗", "📘", "📙", "📔", "📒", "📚", "📖",
+      "🔖", "🔗", "📛", "📜", "📠", "📞", "☎️", "📟", "📠", "📱", "📲", "📷", "📸",
+      "📹", "🎥", "📺", "📻", "🪔", "💡", "🔦", "🏮", "🕯️", "🪄", "💻", "🖥️", "🖨️",
+      "⌨️", "🖱️", "🖲️", "💽", "💾", "💿", "📀", "🎞️", "📽️", "📼", "🕹️", "🎮",
+      "🎰", "📯", "📣", "📢", "📡", "🔌", "🔋", "🔦", "🧯", "🛢️", "💸", "💵", "💴",
+      "💶", "💷", "🪙", "💰", "💳", "💎", "⚖️", "🪜", "🧰", "🛠️", "🪚", "🔨", "🪛",
+      "🔧", "🪝", "🧱", "🪨", "🪵", "⚙️", "🧲", "🔩", "🦯", "🛡️", "🔑", "🗝️", "🔐",
+      "🔒", "🔓", "🪞", "🪟", "🛏️", "🛋️", "🪑", "🚪", "🪠", "🚿", "🛁", "🪤", "🪒",
+      "🧴", "🧷", "🧹", "🧺", "🧻", "🪣", "🧼", "🪥", "🧽", "🧯", "🛒", "🚬", "⚰️",
+      "⚱️", "🏺", "🪦", "🕳️", "💌", "📮", "📪", "📫", "📬", "📭", "📦", "📤", "📥",
+      "📦", "📧", "🖋️", "✒️", "🖌️", "🖍️", "📝", "📁", "📂", "📅", "📆", "📇", "📊",
+      "📋", "📌", "📎", "📏", "📐", "📜", "📒", "📘", "📙", "📚", "📖", "🔖", "🔗",
+      "🔎", "🔍", "🕯️", "🪔", "💡", "🔦", "🏮", "💵", "💴", "💶", "💷", "💸", "📕",
+      "📗", "📘", "📙", "📰", "📑", "📋", "📂", "📁", "✂️", "📐", "📏", "🔗", "📌",
+      "📎", "📍", "🔖", "📜", "✏️", "🖊️", "🖋️", "🖌️", "🖍️", "📝", "🗒️", "🔍", "🔎",
+      "📏", "📐", "📂", "📁", "📋", "📊", "📌", "📎", "📍", "✂️", "🖊️", "🖋️", "🖌️",
+      "🖍️", "📅", "📆", "📇", "📊", "📋", "📈", "📉", "📊", "📋", "📌", "📎", "📍"
+    ];
+
+    const reels = [
+      document.getElementById('reel1'),
+      document.getElementById('reel2'),
+      document.getElementById('reel3'),
+      document.getElementById('reel4'),
+      document.getElementById('reel5')
+    ];
+
+    function getRandomEmoji() {
+      return emojis[Math.floor(Math.random() * emojis.length)];
+    }
+
+    function spin() {
+      let reelCounter = 0;
+      const interval = setInterval(() => {
+        reels.forEach((reel, index) => {
+          reel.textContent = getRandomEmoji();
+        });
+        reelCounter++;
+        if (reelCounter > 20) {
+          clearInterval(interval);
+        }
+      }, 100); // Change emojis more slowly (100ms delay)
+    }
+
+    document.getElementById('spinButton').addEventListener('click', spin);
+  </script>
+</body>
+</html>
